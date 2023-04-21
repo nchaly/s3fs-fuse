@@ -4377,8 +4377,8 @@ static int s3fs_check_service()
     // make sure remote mountpath exists and is a directory
     if(!mount_prefix.empty()){
         if(remote_mountpath_exists("/") != 0){
-            S3FS_PRN_CRIT("remote mountpath %s not found.", mount_prefix.c_str());
-            return EXIT_FAILURE;
+            S3FS_PRN_WARN("remote mountpath %s not found.", mount_prefix.c_str());
+            // skip atm return EXIT_FAILURE;
         }
     }
     S3FS_MALLOCTRIM(0);

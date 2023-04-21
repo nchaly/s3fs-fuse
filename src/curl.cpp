@@ -3677,19 +3677,35 @@ int S3fsCurl::CheckBucket(const char* check_path)
     if(!CreateCurlHandle()){
         return -EIO;
     }
+
     std::string urlargs;
+
     if(S3fsCurl::IsListObjectsV2()){
         query_string = "list-type=2";
+    }
+
+    if(strlen(check_path) > 1){
+        if(query_string.length()){
+            query_string += '&';
+        }
+        query_string += "prefix=";
+	std::string prefix = check_path;
+	if(prefix[0] == '/') {
+	    prefix.erase(0, 1);
+	}
+        query_string += prefix;
+    }
+    if(query_string.length()){
         urlargs = "?" + query_string;
     }
 
     std::string resource;
     std::string turl;
-    MakeUrlResource(check_path, resource, turl);
+    MakeUrlResource("/", resource, turl);
 
     turl           += urlargs;
     url             = prepare_url(turl.c_str());
-    path            = check_path;
+    path            = "/";
     requestHeaders  = NULL;
     responseHeaders.clear();
     bodydata.Clear();
